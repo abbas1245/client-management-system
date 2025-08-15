@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+
+.App {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Glass morphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Button hover effects */
+.btn-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient animations */
+@keyframes gradient-x {
+  0%, 100% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+.gradient-animation {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #667eea, #764ba2);
+  background-size: 400% 400%;
+  animation: gradient-x 15s ease infinite;
+}
+
+/* Input focus effects */
+.input-focus {
+  transition: all 0.3s ease;
+}
+
+.input-focus:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Status badge animations */
+.status-badge {
+  transition: all 0.2s ease;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
+  }
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-left: 2px solid #667eea;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom calendar styles */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #667eea;
+  --rdp-background-color: rgba(255, 255, 255, 0.05);
+  margin: 0;
+}
+
+.rdp-months {
+  justify-content: center;
+}
+
+.rdp-month {
+  width: 100%;
+}
+
+.rdp-table {
+  width: 100%;
+  max-width: none;
+}
+
+.rdp-head_cell, .rdp-cell {
+  width: 40px;
+  height: 40px;
+}
+
+.rdp-button {
+  border-radius: 8px;
+  border: none;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.rdp-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.rdp-button_reset {
+  background: transparent;
+  border: none;
+}
+
+.rdp-day_today {
+  background: rgba(102, 126, 234, 0.2);
+  color: #667eea;
+  font-weight: 600;
+}
+
+.rdp-day_selected {
+  background: #667eea;
+  color: white;
+}
+
+.rdp-day_selected:hover {
+  background: #5a67d8;
+}
+
+.rdp-head_cell {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.rdp-nav_button {
+  color: rgba(255, 255, 255, 0.7);
+  width: 32px;
+  height: 32px;
+}
+
+.rdp-nav_button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.rdp-caption_label {
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+  
+  .sidebar-text {
+    display: none;
+  }
+  
+  .main-content {
+    margin-left: 60px;
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+button, input, select, textarea {
+  transition: all 0.2s ease;
+}
+
+/* Focus styles for accessibility */
+button:focus, input:focus, select:focus, textarea:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.5);
+  outline-offset: 2px;
+}
+
+/* Text selection */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: white;
+}
+
+/* Improve contrast for better readability */
+.text-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.text-subtle {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Custom dialog animations */
+.dialog-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.dialog-content {
+  animation: dialog-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
