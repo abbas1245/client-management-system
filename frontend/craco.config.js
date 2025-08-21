@@ -10,6 +10,9 @@ module.exports = {
   webpack: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      // Fix Ajv compatibility issues
+      'ajv': path.resolve(__dirname, 'node_modules/ajv'),
+      'ajv-keywords': path.resolve(__dirname, 'node_modules/ajv-keywords'),
     },
     configure: (webpackConfig) => {
       
@@ -39,6 +42,20 @@ module.exports = {
           ],
         };
       }
+      
+      // Fix Ajv module resolution issues
+      webpackConfig.resolve = webpackConfig.resolve || {};
+      webpackConfig.resolve.fallback = webpackConfig.resolve.fallback || {};
+      webpackConfig.resolve.fallback['ajv/dist/compile/codegen'] = false;
+      
+      // Handle React 19 compatibility
+      if (webpackConfig.resolve.alias) {
+        webpackConfig.resolve.alias['react/jsx-runtime'] = require.resolve('react/jsx-runtime');
+      }
+      
+      // Ensure proper module resolution
+      webpackConfig.resolve.modules = webpackConfig.resolve.modules || [];
+      webpackConfig.resolve.modules.push('node_modules');
       
       return webpackConfig;
     },
