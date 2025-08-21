@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Cliento - Client Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A professional client management system built with React and modern web technologies.
 
 ## Available Scripts
 

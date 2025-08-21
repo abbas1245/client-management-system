@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "client-main",
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "yarn workspace backend dev",
+    "start:frontend": "yarn workspace frontend start",
+    "start:backend": "yarn workspace backend start",
+    "lint": "echo 'No root lint configured'"
+  }
+}

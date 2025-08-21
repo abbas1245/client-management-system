@@ -12,6 +12,7 @@ router.get('/stats', async (req, res) => {
     
     // Get client statistics
     const clientStats = await Client.aggregate([
+      { $match: { user: req.user._id } },
       {
         $facet: {
           statusBreakdown: [
@@ -31,6 +32,7 @@ router.get('/stats', async (req, res) => {
     
     // Get meeting statistics
     const meetingStats = await Meeting.aggregate([
+      { $match: { user: req.user._id } },
       {
         $facet: {
           upcomingMeetings: [
@@ -47,8 +49,8 @@ router.get('/stats', async (req, res) => {
     ]);
     
     // Calculate conversion rates
-    const totalClients = await Client.countDocuments();
-    const wonClients = await Client.countDocuments({ pitch_status: 'Closed/Won' });
+    const totalClients = await Client.countDocuments({ user: req.user._id });
+    const wonClients = await Client.countDocuments({ user: req.user._id, pitch_status: 'Closed/Won' });
     const conversionRate = totalClients > 0 ? (wonClients / totalClients * 100).toFixed(1) : 0;
     
     // Build response

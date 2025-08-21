@@ -1,336 +1,157 @@
-# 🚀 SalesForge CRM - Complete Web Application
+# SalesForge CRM - Complete Business Management Platform
 
-A fully functional Customer Relationship Management (CRM) system built with React frontend and Node.js/Express backend, integrated with MongoDB Atlas.
+A modern, full-stack CRM application built with React frontend and Node.js backend, featuring client management, project tracking, meeting scheduling, and **secure user authentication**.
 
 ## ✨ Features
 
-### Frontend (React)
-- **Modern UI/UX** with Tailwind CSS and shadcn/ui components
-- **Responsive Design** that works on all devices
-- **Real-time Updates** with toast notifications
-- **Advanced Filtering** and search capabilities
-- **Interactive Calendar** for meeting management
-- **Beautiful Dashboard** with statistics and charts
+### 🔐 User Authentication
+- **Secure Signup & Login**: User registration and authentication system
+- **JWT Tokens**: Secure session management with 7-day expiration
+- **Password Security**: Bcrypt hashing with strength validation
+- **Protected Routes**: Dashboard access only after authentication
+- **Persistent Sessions**: Automatic login state management
 
-### Backend (Node.js/Express)
-- **RESTful API** with comprehensive CRUD operations
-- **MongoDB Atlas** integration with Mongoose ODM
-- **Input Validation** using express-validator
-- **Security Features** with helmet, CORS, and rate limiting
-- **Error Handling** middleware
-- **Logging** with Morgan
-- **Performance** with compression and indexing
+### 🏢 Client Management
+- Add, edit, and delete clients
+- Track business information and contact details
+- Manage pitch status and follow-up dates
+- Export client data to Excel
 
-### Database (MongoDB Atlas)
-- **Scalable Cloud Database** with automatic backups
-- **Optimized Schemas** with proper indexing
-- **Data Relationships** between clients and meetings
-- **Flexible Document Structure** for easy expansion
+### 📋 Project Management
+- Create and manage projects linked to clients
+- Track project status, priority, and progress
+- **NEW: File upload support for project documents**
+- **NEW: Detailed project view with document management**
+- Support for multiple file types (PDF, Word, Excel, Images)
 
-## 🛠️ Tech Stack
+### 📅 Meeting Scheduling
+- Schedule meetings with clients
+- Track meeting notes and outcomes
+- Calendar integration
 
-- **Frontend**: React 19, Tailwind CSS, shadcn/ui, Axios
-- **Backend**: Node.js, Express.js, Mongoose
-- **Database**: MongoDB Atlas
-- **Authentication**: JWT (ready for implementation)
-- **Validation**: express-validator
-- **Security**: Helmet, CORS
+### 📊 Dashboard
+- Real-time statistics and analytics
+- Visual charts and progress tracking
+- Quick overview of all activities
 
-## 📋 Prerequisites
+## 🚀 New Features (Latest Update)
 
-- Node.js (v16 or higher)
-- npm or yarn package manager
-- MongoDB Atlas account
-- Git
+### 🔐 Authentication System
+- **Complete Auth Flow**: Signup, login, and protected dashboard access
+- **Modern UI Design**: Beautiful authentication pages with custom background support
+- **Responsive Layout**: Split-screen design with forms and background image
+- **Theme Consistency**: Matches the overall project design aesthetic
 
-## 🚀 Quick Start
+### 📁 Document Management
+- **File Upload**: Attach multiple documents to projects during creation
+- **File Types Supported**: PDF, Word (.doc, .docx), Excel (.xls, .xlsx), Text files, Images (JPG, PNG, GIF)
+- **File Size Limit**: 10MB per file
+- **Storage**: Files are stored securely on the server with unique naming
 
-### 1. Clone the Repository
-```bash
-git clone <your-repo-url>
-cd client-main
-```
+### 👁️ Project Detail View
+- **Show Button**: New eye icon button on project cards to view full details
+- **Comprehensive View**: See all project information, dates, and assigned team members
+- **Document Browser**: View, download, and delete attached documents
+- **Add More Files**: Upload additional documents to existing projects
+- **Real-time Updates**: Changes reflect immediately in the interface
 
-### 2. Backend Setup
+## 🛠️ Technology Stack
 
-#### Install Dependencies
+### Frontend
+- React 18 with modern hooks
+- Tailwind CSS for styling
+- Shadcn/ui components
+- Lucide React icons
+- Chart.js for data visualization
+
+### Backend
+- Node.js with Express
+- MongoDB with Mongoose
+- Multer for file uploads
+- Express validation
+- CORS enabled
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 16+ 
+- MongoDB database
+- npm or yarn
+
+### Authentication Setup
+The authentication system is automatically configured. Users can:
+1. **Sign up** with email and password
+2. **Login** to access the dashboard
+3. **Stay logged in** with persistent sessions
+4. **Logout** to end their session
+
+For custom background images, see `frontend/README-AUTH.md`
+
+### Backend Setup
 ```bash
 cd backend
 npm install
-# or
-yarn install
+# Create .env file with your MongoDB URI
+npm run dev
 ```
 
-#### Environment Configuration
+### Frontend Setup
 ```bash
-# Copy the example environment file
-cp env.example .env
-
-# Edit .env with your MongoDB Atlas credentials
-nano .env
+cd frontend
+npm install
+npm start
 ```
 
-**Required Environment Variables:**
+## 🔧 Environment Variables
+
+Create a `.env` file in the backend directory:
+
 ```env
-# MongoDB Atlas Connection String
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/salesforge?retryWrites=true&w=majority
-
-# Server Configuration
+MONGODB_URI=your_mongodb_connection_string
 PORT=5000
-NODE_ENV=development
-
-# JWT Secret
-JWT_SECRET=your-super-secret-jwt-key-here
-
-# CORS Origin
 CORS_ORIGIN=http://localhost:3000
 ```
 
-#### Start Backend Server
-```bash
-# Development mode (with auto-reload)
-npm run dev
+## 📁 File Storage
 
-# Production mode
-npm start
-```
+- Uploaded files are stored in `backend/uploads/projects/`
+- Files are served statically at `/uploads` endpoint
+- Automatic directory creation
+- Secure file naming with timestamps
 
-The backend will start on `http://localhost:5000`
+## 🎨 UI/UX Features
 
-### 3. Frontend Setup
-
-#### Install Dependencies
-```bash
-cd ../frontend
-npm install
-# or
-yarn install
-```
-
-#### Start Frontend Development Server
-```bash
-npm start
-# or
-yarn start
-```
-
-The frontend will start on `http://localhost:3000`
-
-## 🗄️ MongoDB Atlas Setup
-
-### 1. Create MongoDB Atlas Account
-- Go to [MongoDB Atlas](https://www.mongodb.com/atlas)
-- Sign up for a free account
-
-### 2. Create a Cluster
-- Choose the free tier (M0)
-- Select your preferred cloud provider and region
-- Click "Create Cluster"
-
-### 3. Set Up Database Access
-- Go to "Database Access" in the left sidebar
-- Click "Add New Database User"
-- Create a username and password
-- Select "Read and write to any database"
-- Click "Add User"
-
-### 4. Set Up Network Access
-- Go to "Network Access" in the left sidebar
-- Click "Add IP Address"
-- Click "Allow Access from Anywhere" (for development)
-- Click "Confirm"
-
-### 5. Get Connection String
-- Go to "Clusters" in the left sidebar
-- Click "Connect"
-- Choose "Connect your application"
-- Copy the connection string
-- Replace `<username>`, `<password>`, and `<dbname>` with your values
-- Update your `.env` file
-
-## 📱 Application Features
-
-### Dashboard
-- **Overview Statistics**: Total clients, conversion rates, upcoming meetings
-- **Status Breakdown**: Visual representation of client pipeline
-- **Quick Actions**: Add clients, schedule meetings
-
-### Client Management
-- **Add/Edit Clients**: Comprehensive client information forms
-- **Search & Filter**: Find clients by name, email, status, or business
-- **Status Tracking**: Monitor client progress through sales pipeline
-- **Business Details**: Store company information, notes, and tags
-
-### Meeting Management
-- **Schedule Meetings**: Book appointments with clients
-- **Calendar View**: Visual calendar interface
-- **Meeting Types**: Categorize meetings (consultation, pitch, demo, etc.)
-- **Reminders**: Set up notification preferences
-- **Follow-up Tracking**: Manage post-meeting actions
-
-### Advanced Features
-- **Data Validation**: Input validation on both frontend and backend
-- **Error Handling**: User-friendly error messages
-- **Responsive Design**: Works on desktop, tablet, and mobile
-- **Real-time Updates**: Immediate feedback on actions
-- **Search & Pagination**: Efficient data browsing
+- **Glass Morphism**: Modern, translucent design elements
+- **Gradient Backgrounds**: Beautiful color transitions
+- **Responsive Design**: Works on all device sizes
+- **Smooth Animations**: Hover effects and transitions
+- **Dark Theme**: Easy on the eyes with high contrast
 
 ## 🔒 Security Features
 
-- **Input Validation**: All user inputs are validated
-- **CORS Protection**: Configurable cross-origin settings
-- **Security Headers**: Helmet.js for security headers
-- **Data Sanitization**: Clean and safe data storage
-- **Rate Limiting**: Ready for implementation
+- File type validation
+- File size limits
+- Secure file storage
+- Input validation and sanitization
+- CORS protection
 
-## 📊 Performance Features
+## 📱 Usage
 
-- **Database Indexing**: Optimized queries with proper indexes
-- **Response Compression**: Faster data transfer
-- **Pagination**: Efficient data loading
-- **Lean Queries**: Optimized MongoDB operations
+1. **Add Clients**: Navigate to Clients tab and click "Add Client"
+2. **Create Projects**: Go to Projects tab and click "Add Project"
+3. **Upload Files**: Use the file upload area in project forms
+4. **View Details**: Click the eye icon on project cards
+5. **Manage Documents**: View, download, or delete files in project detail view
 
-## 🧪 Testing the Application
+## 🚧 Development
 
-### 1. Health Check
-```bash
-curl http://localhost:5000/api/health
-```
-
-### 2. Test API Endpoints
-```bash
-# Get all clients
-curl http://localhost:5000/api/clients
-
-# Get dashboard stats
-curl http://localhost:5000/api/dashboard/stats
-
-# Get upcoming meetings
-curl http://localhost:5000/api/meetings/upcoming/list
-```
-
-### 3. Frontend Testing
-- Open `http://localhost:3000` in your browser
-- Try adding a new client
-- Schedule a meeting
-- Test search and filtering
-
-## 🚀 Deployment
-
-### Backend Deployment
-
-#### Option 1: PM2 (Recommended)
-```bash
-npm install -g pm2
-pm2 start server.js --name "salesforge-backend"
-pm2 startup
-pm2 save
-```
-
-#### Option 2: Docker
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 5000
-CMD ["npm", "start"]
-```
-
-### Frontend Deployment
-
-#### Build for Production
-```bash
-npm run build
-```
-
-#### Deploy to Netlify/Vercel
-- Connect your GitHub repository
-- Set build command: `npm run build`
-- Set publish directory: `build`
-
-## 📁 Project Structure
-
-```
-client-main/
-├── frontend/                 # React frontend application
-│   ├── public/              # Static files
-│   ├── src/                 # Source code
-│   │   ├── components/      # UI components
-│   │   ├── hooks/          # Custom React hooks
-│   │   └── lib/            # Utility functions
-│   ├── package.json         # Frontend dependencies
-│   └── tailwind.config.js   # Tailwind configuration
-├── backend/                  # Node.js backend application
-│   ├── models/              # Database models
-│   ├── routes/              # API routes
-│   ├── server.js            # Main server file
-│   ├── package.json         # Backend dependencies
-│   └── .env                 # Environment variables
-└── README.md                # This file
-```
-
-## 🔧 Development
-
-### Adding New Features
-1. **Backend**: Create new routes in `backend/routes/`
-2. **Frontend**: Add new components in `frontend/src/components/`
-3. **Database**: Update models in `backend/models/`
-
-### Code Style
-- **Frontend**: ESLint + Prettier configuration
-- **Backend**: Standard Node.js practices
-- **Database**: MongoDB best practices
-
-## 📞 Support & Troubleshooting
-
-### Common Issues
-
-#### Backend Won't Start
-- Check MongoDB Atlas connection string
-- Verify environment variables
-- Check if port 5000 is available
-
-#### Frontend Can't Connect to Backend
-- Ensure backend is running on port 5000
-- Check CORS configuration
-- Verify API endpoints
-
-#### Database Connection Issues
-- Check MongoDB Atlas network access
-- Verify username/password
-- Ensure cluster is running
-
-### Getting Help
-- Check the console for error messages
-- Review the API documentation
-- Check MongoDB Atlas logs
-
-## 🚀 Future Enhancements
-
-- **User Authentication**: JWT-based login system
-- **Role-based Access**: Admin, manager, and user roles
-- **Email Notifications**: Automated meeting reminders
-- **File Uploads**: Document management for clients
-- **Advanced Analytics**: Detailed reporting and insights
-- **Mobile App**: React Native mobile application
-- **API Documentation**: Swagger/OpenAPI documentation
+The application is built with modern development practices:
+- Component-based architecture
+- State management with React hooks
+- RESTful API design
+- Error handling and user feedback
+- Responsive and accessible design
 
 ## 📄 License
 
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
----
-
-**Happy Coding! 🎉**
-
-For questions or support, please create an issue in the repository.
+MIT License - feel free to use and modify as needed.

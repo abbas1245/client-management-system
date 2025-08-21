@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const clientSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+    required: true
+  },
   name: {
     type: String,
     required: [true, 'Client name is required'],
@@ -15,8 +21,7 @@ const clientSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
-    unique: true,
+    required: false,
     lowercase: true,
     trim: true,
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
@@ -87,7 +92,11 @@ const clientSchema = new mongoose.Schema({
 });
 
 // Indexes for better query performance
-clientSchema.index({ email: 1 });
+// Make client email unique per user when email exists
+clientSchema.index(
+  { user: 1, email: 1 },
+  { unique: true, partialFilterExpression: { email: { $exists: true, $type: 'string', $ne: '' } } }
+);
 clientSchema.index({ pitch_status: 1 });
 clientSchema.index({ business_name: 'text', name: 'text' });
 clientSchema.index({ createdAt: -1 });

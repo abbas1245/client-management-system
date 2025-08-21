@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const meetingSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+    required: true
+  },
   client_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Client',
@@ -132,11 +138,18 @@ meetingSchema.virtual('isUpcoming').get(function() {
   return this.datetime > new Date() && this.status === 'Scheduled';
 });
 
-// Pre-save middleware to validate date
+// Pre-save middleware to validate combined datetime
 meetingSchema.pre('save', function(next) {
-  if (this.date && this.date < new Date()) {
-    const error = new Error('Meeting date cannot be in the past');
-    return next(error);
+  if (this.date && this.time) {
+    const [hours, minutes] = String(this.time).split(':');
+    const dt = new Date(this.date);
+    if (!isNaN(parseInt(hours)) && !isNaN(parseInt(minutes))) {
+      dt.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      if (dt < new Date()) {
+        const error = new Error('Meeting datetime cannot be in the past');
+        return next(error);
+      }
+    }
   }
   next();
 });
