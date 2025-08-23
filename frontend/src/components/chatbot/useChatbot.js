@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import api from '../../lib/axios';
+import { api } from '../../lib';
 
 export function useChatbot() {
   const [messages, setMessages] = useState([]);

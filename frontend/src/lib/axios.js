@@ -1,14 +1,16 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 
 api.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers = config.headers || {};
+      if (!config.headers) {
+        config.headers = {};
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
   } catch {}
@@ -27,5 +29,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
-

@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
-console.log("HF_API_KEY:", process.env.HF_API_KEY ? "Loaded ✅" : "Missing ❌");
+console.log("OPENROUTER_API_KEY:", process.env.OPENROUTER_API_KEY ? "Loaded ✅" : "Missing ❌");
 
 // Robustly load backend/.env regardless of CWD
 (() => {

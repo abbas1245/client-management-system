@@ -1,15 +1,10 @@
-import axios, { AxiosHeaders } from 'axios';
+import axios from 'axios';
 
 // Minimal declaration to satisfy TS when '@types/node' is not installed
 declare const process: any;
 
-const baseURL =
-  (process?.env?.REACT_APP_API_URL) ||
-  (process?.env?.REACT_APP_BACKEND_URL) ||
-  'http://localhost:5000/api';
-
 const api = axios.create({
-  baseURL,
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 
 api.interceptors.request.use((config) => {
@@ -17,13 +12,24 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
       if (!config.headers) {
-        config.headers = new AxiosHeaders();
+        config.headers = {};
       }
-      (config.headers as AxiosHeaders).set('Authorization', `Bearer ${token}`);
+      config.headers.Authorization = `Bearer ${token}`;
     }
   } catch {}
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401) {
+      try { localStorage.removeItem('token'); } catch {}
+      try { window?.location?.assign?.('/auth'); } catch {}
+    }
+    return Promise.reject(err);
+  }
+);
 
 export default api;
 
