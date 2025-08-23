@@ -13,7 +13,7 @@ const limiter = rateLimit({ windowMs: 60 * 1000, max: 60 });
 router.use(limiter);
 
 // Hugging Face API key
-const HF_KEY = process.env.HUGGINGFACE_API_KEY;
+const OR_KEY = process.env.OPENROUTER_API_KEY;
 
 const validateChat = [
   body('message').isString().trim().isLength({ min: 1, max: 4000 }).withMessage('Message is required'),
@@ -59,24 +59,37 @@ router.post('/', validateChat, async (req, res) => {
     const orgSnippet = orgContext.length
       ? `ORG_CONTEXT: ${JSON.stringify(orgContext.map(s => ({ type: s.type, count: s.data.length, sample: s.data.slice(0, 3) })))}`
       : '';
-
-    // Call Hugging Face
-    if (!HF_KEY) return res.status(200).json({ answer: 'LLM is not configured. Please set HUGGINGFACE_API_KEY on the server.' });
-    const hf = await axios.post(
-      'https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
-      { inputs: `${system} ${orgSnippet} USER_QUESTION: ${message}` },
-      { headers: { Authorization: `Bearer ${HF_KEY}`, 'Content-Type': 'application/json', 'X-Wait-For-Model': 'true' }, timeout: 60000 }
-    );
-    if (hf.data?.error) return res.status(200).json({ answer: `Language model error: ${hf.data.error}`, usedOrgData: !!orgSnippet });
-    let text = 'No response';
-    if (Array.isArray(hf.data) && hf.data[0]?.generated_text) text = String(hf.data[0].generated_text).trim();
-    else if (hf.data?.generated_text) text = String(hf.data.generated_text).trim();
-    res.json({ answer: text, usedOrgData: !!orgSnippet });
-
-  } catch (error) {
-    console.error('Chatbot error:', error.response?.data || error.message || error);
-    res.status(500).json({ error: 'Failed to get chatbot response' });
-  }
+      
+      if (!OR_KEY) {
+        return res.status(500).json({ answer: 'LLM is not configured. Please set OPENROUTER_API_KEY on the server.' });
+      }
+  
+      // Call OpenRouter API
+      const response = await axios.post(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          model: 'deepseek/deepseek-chat-v3-0324',
+          messages: [
+            { role: 'system', content: `${system} ${orgSnippet}` },
+            { role: 'user', content: message }
+          ]
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OR_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 60000
+        }
+      );
+  
+      const reply = response.data?.choices?.[0]?.message?.content || 'No response from model';
+      res.json({ answer: reply, usedOrgData: !!orgSnippet });
+  
+    } catch (error) {
+      console.error('Chatbot error:', error.response?.data || error.message || error);
+      res.status(500).json({ error: 'Failed to get chatbot response' });
+    }
 });
 
 module.exports = router;
