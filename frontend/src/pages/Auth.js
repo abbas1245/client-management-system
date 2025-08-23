@@ -33,9 +33,9 @@ const Auth = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-black/35" />
       </div>
 
-      {/* Left Side - Login/Signup Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-start pl-8 lg:pl-12 xl:pl-16 relative z-10">
-        <div className={`w-full ${isLogin ? 'max-w-md sm:max-w-lg' : 'max-w-lg sm:max-w-xl'}`}>
+      {/* Form Container - Centered on Mobile, Left-aligned on Desktop */}
+      <div className="w-full flex items-center justify-center lg:justify-start lg:w-1/2 px-4 sm:px-6 lg:pl-12 xl:pl-16 relative z-10">
+        <div className={`w-full max-w-sm sm:max-w-md md:max-w-lg ${isLogin ? 'lg:max-w-md xl:max-w-lg' : 'lg:max-w-lg xl:max-w-xl'}`}>
           {/* Glass Form Container with Scrolling */}
           <div className={`bg-gradient-to-br from-white/15 via-purple-900/25 to-fuchsia-900/25 backdrop-blur-2xl rounded-3xl border border-white/30 shadow-2xl shadow-black/60 relative overflow-hidden ${isLogin ? 'max-h-[calc(100vh-120px)] my-4' : 'max-h-[calc(100vh-80px)] my-2'}`}>
             {/* Subtle background elements */}
@@ -44,7 +44,7 @@ const Auth = () => {
             <div className="absolute bottom-0 left-0 w-16 h-16 bg-fuchsia-400/20 rounded-full blur-xl"></div>
             
             {/* Scrollable Form Content */}
-            <div className={`relative z-10 ${isLogin ? 'p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-120px)]' : 'p-5 lg:p-6 overflow-y-hidden max-h-[calc(100vh-80px)]'}`}>
+            <div className={`relative z-10 ${isLogin ? 'p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-120px)]' : 'p-4 sm:p-5 lg:p-6 overflow-y-hidden max-h-[calc(100vh-80px)]'}`}>
               {isLogin ? (
                 <Login onSwitchToSignup={() => setIsLogin(false)} />
               ) : (
@@ -54,7 +54,7 @@ const Auth = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-left mt-1 mb-0">
+          <div className="text-center lg:text-left mt-1 mb-0">
             <p className="text-purple-200/80 text-sm font-medium">
               © 2024 Cliento. All rights reserved.
             </p>
@@ -62,7 +62,7 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Right Side - Pure Background Image */}
+      {/* Right Side - Hidden on Mobile, Visible on Desktop */}
       <div className="hidden lg:block lg:w-1/2 relative z-10 bg-transparent"></div>
 
       {/* Toast notifications */}

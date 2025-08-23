@@ -39,7 +39,7 @@ import { format, subMonths, startOfMonth, eachMonthOfInterval } from 'date-fns';
 
 ChartJS.register(ArcElement, ChartTooltip, ChartLegend, CategoryScale, LinearScale, BarElement, ChartTitle);
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = BACKEND_URL;
 
 function Dashboard() {
@@ -923,7 +923,21 @@ function Dashboard() {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       <div className="flex h-full">
-        <aside className="w-64 min-h-screen bg-gradient-to-b from-purple-500/10 via-indigo-500/10 to-sky-500/10 border border-white/10 p-6 rounded-2xl m-6 sticky top-6 backdrop-blur-md">
+        {/* Mobile Navigation Toggle */}
+        <div className="lg:hidden fixed top-4 left-4 z-50">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setActiveTab('dashboard')}
+            className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg p-2 bg-black/20 backdrop-blur-md"
+            title="Menu"
+          >
+            <Users className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Sidebar - Hidden on Mobile, Visible on Desktop */}
+        <aside className="hidden lg:block w-64 min-h-screen bg-gradient-to-b from-purple-500/10 via-indigo-500/10 to-sky-500/10 border border-white/10 p-6 rounded-2xl m-6 sticky top-6 backdrop-blur-md">
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
@@ -960,59 +974,110 @@ function Dashboard() {
           </div>
         </aside>
 
-        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto overflow-y-auto pb-24">
+        {/* Mobile Navigation Bar */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/20 backdrop-blur-md border-t border-white/10">
+          <div className="flex justify-around py-2">
+            <Button
+              variant={activeTab === 'dashboard' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('dashboard')}
+              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
+            >
+              <Users className="h-4 w-4 mb-1" />
+              Dashboard
+            </Button>
+            <Button
+              variant={activeTab === 'clients' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('clients')}
+              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
+            >
+              <Users className="h-4 w-4 mb-1" />
+              Clients
+            </Button>
+            <Button
+              variant={activeTab === 'leads' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('leads')}
+              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
+            >
+              <Users className="h-4 w-4 mb-1" />
+              Leads
+            </Button>
+            <Button
+              variant={activeTab === 'projects' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('projects')}
+              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
+            >
+              <Briefcase className="h-4 w-4 mb-1" />
+              Projects
+            </Button>
+            <Button
+              variant={activeTab === 'meetings' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveTab('meetings')}
+              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
+            >
+              <CalendarIcon className="h-4 w-4 mb-1" />
+              Meetings
+            </Button>
+          </div>
+        </div>
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto overflow-y-auto pb-24 lg:pb-6">
           {activeTab === 'dashboard' && (
               <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-gray-400 text-sm">Total Clients</p>
-                        <p className="text-3xl font-bold text-sky-300">{stats.totalClients}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                                  <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gray-400 text-sm">Total Clients</p>
+                          <p className="text-2xl sm:text-3xl font-bold text-sky-300">{stats.totalClients}</p>
+                        </div>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-gradient-to-br from-purple-500/20 to-sky-500/10 flex items-center justify-center">
+                          <Users className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
+                        </div>
                       </div>
-                      <div className="w-12 h-12 rounded-xl border border-white/10 bg-gradient-to-br from-purple-500/20 to-sky-500/10 flex items-center justify-center">
-                        <Users className="h-6 w-6 text-blue-400" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                  <CardContent className="p-6">
+                    </CardContent>
+                  </Card>
+                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400 text-sm">Total Projects</p>
-                        <p className="text-3xl font-bold text-fuchsia-300">{stats.totalProjects}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-fuchsia-300">{stats.totalProjects}</p>
                       </div>
-                      <div className="w-12 h-12 rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 to-sky-500/10 flex items-center justify-center">
-                        <Briefcase className="h-6 w-6 text-fuchsia-400" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 to-sky-500/10 flex items-center justify-center">
+                        <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-fuchsia-400" />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                  <CardContent className="p-6">
+                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400 text-sm">Total Leads</p>
-                        <p className="text-3xl font-bold text-emerald-300">{stats.totalLeads}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-emerald-300">{stats.totalLeads}</p>
                       </div>
-                      <div className="w-12 h-12 rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 flex items-center justify-center">
-                        <Users className="h-6 w-6 text-emerald-400" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 flex items-center justify-center">
+                        <Users className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-400" />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                  <CardContent className="p-6">
+                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400 text-sm">Upcoming Meetings</p>
-                        <p className="text-3xl font-bold text-purple-300">{stats.upcomingMeetings}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-purple-300">{stats.upcomingMeetings}</p>
                       </div>
-                      <div className="w-12 h-12 rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 to-purple-500/10 flex items-center justify-center">
-                        <Clock className="h-6 w-6 text-purple-400" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 to-purple-500/10 flex items-center justify-center">
+                        <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
                       </div>
                     </div>
                   </CardContent>
@@ -1028,7 +1093,7 @@ function Dashboard() {
                 .sort((a, b) => new Date(a.date) - new Date(b.date))
                 .slice(0, 3);
               return (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
                   <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300">
                     <CardHeader className="border-b border-white/10">
                       <div className="flex items-center justify-between">
@@ -1089,7 +1154,7 @@ function Dashboard() {
               );
             })()}
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300">
                 <CardHeader className="border-b border-white/10">
                   <CardTitle className="text-white/90">Status Breakdown</CardTitle>
@@ -1132,8 +1197,8 @@ function Dashboard() {
           {activeTab === 'projects' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-300 to-sky-300 bg-clip-text text-transparent">Projects</h2>
-                <div className="flex gap-2">
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-fuchsia-300 to-sky-300 bg-clip-text text-transparent">Projects</h2>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportProjects}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1143,7 +1208,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
                 {projectStatusOptions.map((s) => (
                   <Card key={s} className="bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all duration-300">
                     <CardContent className="p-3">
@@ -1154,7 +1219,7 @@ function Dashboard() {
                 ))}
               </div>
 
-              <div className="flex gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                   <Input value={projectSearch} onChange={(e) => setProjectSearch(e.target.value)} placeholder="Search projects..." className="h-12 pl-10 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/70 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition" />
@@ -1173,7 +1238,7 @@ function Dashboard() {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {filteredProjects.map((p) => (
                   <Card key={p._id || p.id} className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl group">
                     <CardHeader className="pb-3 border-b border-white/10">
@@ -1228,8 +1293,8 @@ function Dashboard() {
           {activeTab === 'leads' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">Leads Development</h2>
-                <div className="flex gap-2">
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">Leads Development</h2>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportLeads}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1243,7 +1308,7 @@ function Dashboard() {
               </div>
 
               {/* Lead status summary cards */}
-              <div className="grid grid-cols-2 md:grid-cols-7 gap-3 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3 mb-4 sm:mb-6">
                 {leadStatusOptions.map((s) => (
                   <Card key={s} className="bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all duration-300">
                     <CardContent className="p-3">
@@ -1255,7 +1320,7 @@ function Dashboard() {
               </div>
 
               {/* Search and filters */}
-              <div className="flex gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                   <Input 
@@ -1408,8 +1473,8 @@ function Dashboard() {
           {activeTab === 'clients' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Clients</h2>
-                <div className="flex gap-2">
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Clients</h2>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportClients}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1420,7 +1485,7 @@ function Dashboard() {
               </div>
 
               {/* Small status summary cards */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
                 {['Pending','To Be Pitched','Cancelled','Closed/Won','Lost'].map((s) => (
                   <Card key={s} className="bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all duration-300">
                     <CardContent className="p-3">
@@ -1431,7 +1496,7 @@ function Dashboard() {
                 ))}
               </div>
 
-              <div className="flex gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                   <Input
@@ -1472,7 +1537,7 @@ function Dashboard() {
               {loading ? (
                 <div className="text-center py-8 text-gray-400">Loading...</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {clients.map(client => (
                     <Card key={client._id || client.id} className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl group">
                       <CardHeader className="pb-3 border-b border-white/10">
@@ -1544,7 +1609,7 @@ function Dashboard() {
           {activeTab === 'meetings' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Meetings</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Meetings</h2>
                <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => setIsAddMeetingOpen(true)}>
                  <Plus className="mr-2 h-4 w-4" /> Schedule Meeting
                </Button>
@@ -1552,13 +1617,13 @@ function Dashboard() {
                   <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
                     <div className="sticky top-0 z-10 relative h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-                      <div className="relative px-6 pt-6">
-                        <h3 className="text-xl font-semibold text-white/90">Schedule New Meeting</h3>
-                        <p className="text-sm text-white/60">Create a meeting with an existing client</p>
-                      </div>
+                                  <div className="relative px-4 sm:px-6 pt-6">
+              <h3 className="text-xl font-semibold text-white/90">Schedule New Meeting</h3>
+              <p className="text-sm text-white/60">Create a meeting with an existing client</p>
+            </div>
                     </div>
-                    <form onSubmit={handleScheduleMeeting} className="px-6 py-5 space-y-5">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form onSubmit={handleScheduleMeeting} className="px-4 sm:px-6 py-5 space-y-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <Label className="text-white/70 text-xs uppercase tracking-wider">Client *</Label>
                           <Select value={newMeeting.client_id} onValueChange={(v) => setNewMeeting({ ...newMeeting, client_id: v })}>
@@ -1622,7 +1687,7 @@ function Dashboard() {
                </Dialog>
              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
                 <Card className="bg-white/5 border border-white/10 rounded-2xl">
                   <CardHeader className="border-b border-white/10">
                     <CardTitle className="text-white/90">Calendar</CardTitle>
@@ -1650,7 +1715,7 @@ function Dashboard() {
                     {sortedDisplayedMeetings.length === 0 ? (
                       <div className="text-center text-gray-400 py-8">No meetings found</div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {sortedDisplayedMeetings.slice(0, 20).map((meeting) => {
                           const client = clients.find((c) => (c._id || c.id) === meeting.client_id);
                        return (
@@ -1719,13 +1784,13 @@ function Dashboard() {
         <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-6 pt-6">
+            <div className="relative px-4 sm:px-6 pt-6">
               <h3 className="text-xl font-semibold text-white/90">Add New Client</h3>
               <p className="text-sm text-white/60">Enter client details to add them to your CRM</p>
             </div>
           </div>
-          <form onSubmit={handleAddClient} className="px-6 py-5 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-5 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
                 <Input
@@ -1812,14 +1877,14 @@ function Dashboard() {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-6 pt-6">
+            <div className="relative px-4 sm:px-6 pt-6">
               <h3 className="text-xl font-semibold text-white/90">Add New Project</h3>
               <p className="text-sm text-white/60">Link a project to a client</p>
             </div>
           </div>
           <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
-          <form onSubmit={async (e) => { e.preventDefault(); try { const formData = new FormData(); formData.append('name', newProject.name); formData.append('client_id', newProject.client_id); formData.append('description', newProject.description || ''); if (newProject.start_date) formData.append('start_date', new Date(newProject.start_date).toISOString()); if (newProject.due_date) formData.append('due_date', new Date(newProject.due_date).toISOString()); formData.append('assigned_to', newProject.assigned_to || ''); formData.append('status', newProject.status); formData.append('priority', newProject.priority); if (newProject.progress !== '') formData.append('progress', newProject.progress); selectedFiles.forEach(file => { formData.append('documents', file); }); if (!newProject.client_id) { toast.error('Select a client'); return; } await axios.post(`${API}/projects`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }); toast.success('Project created'); setIsAddProjectOpen(false); setNewProject({ name: '', client_id: '', description: '', start_date: '', due_date: '', assigned_to: '', status: 'Not Started', priority: 'Medium', progress: '' }); setSelectedFiles([]); fetchProjects(); } catch (err) { const firstValidationMessage = Array.isArray(err?.response?.data?.details) && err.response.data.details.length > 0 ? err.response.data.details[0]?.msg : null; const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to create project'; toast.error(message); } }} className="px-6 py-5 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <form onSubmit={async (e) => { e.preventDefault(); try { const formData = new FormData(); formData.append('name', newProject.name); formData.append('client_id', newProject.client_id); formData.append('description', newProject.description || ''); if (newProject.start_date) formData.append('start_date', new Date(newProject.start_date).toISOString()); if (newProject.due_date) formData.append('due_date', new Date(newProject.due_date).toISOString()); formData.append('assigned_to', newProject.client_id); formData.append('status', newProject.status); formData.append('priority', newProject.priority); if (newProject.progress !== '') formData.append('progress', newProject.progress); selectedFiles.forEach(file => { formData.append('documents', file); }); if (!newProject.client_id) { toast.error('Select a client'); return; } await axios.post(`${API}/projects`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }); toast.success('Project created'); setIsAddProjectOpen(false); setNewProject({ name: '', client_id: '', description: '', start_date: '', due_date: '', assigned_to: '', status: 'Not Started', priority: 'Medium', progress: '' }); setSelectedFiles([]); fetchProjects(); } catch (err) { const firstValidationMessage = Array.isArray(err?.response?.data?.details) && err.response.data.details.length > 0 ? err.response.data.details[0]?.msg : null; const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to create project'; toast.error(message); } }} className="px-4 sm:px-6 py-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Project Name *</Label>
                 <Input value={newProject.name} onChange={(e) => setNewProject({ ...newProject, name: e.target.value })} required className="bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/60 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition" />
