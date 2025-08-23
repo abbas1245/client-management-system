@@ -44,11 +44,24 @@ const auth = require('./middleware/auth');
 const chatbotRoutes = require('./routes/chatbot');
 
 // Middleware
+const allowedOrigins = [
+  "https://final-b4k.pages.dev",  // Cloudflare Pages preview/live
+  "https://cliento.icu",          // root domain
+  "https://www.cliento.icu"       // www domain
+];
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: (envConfig?.CLIENT_URL) || process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -106,7 +119,7 @@ app.use('*', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Frontend URL: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`);
+  console.log(`📱 Frontend URL: ${process.env.CORS_ORIGIN || 'https://www.cliento.icu'}`);
   // Keep legacy log but prefer CLIENT_URL above
   console.log(`🔗 API URL: http://localhost:${PORT}/api`);
 });
