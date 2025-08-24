@@ -10,24 +10,43 @@ import { format } from 'date-fns';
 
 // Removed quickPrompts array since default topics are no longer shown
 
+// Strip common Markdown emphasis markers so assistant replies render as plain text
+const sanitizeMarkdown = (text) => {
+  if (!text) return text;
+  return String(text)
+    // remove bold/italic markers
+    .replace(/\*\*|__/g, '')
+    .replace(/\*|_/g, '')
+    // remove inline code/backticks
+    .replace(/`+/g, '')
+    // basic cleanup for list asterisks at line starts
+    .replace(/^\s*\*\s+/gm, '• ');
+};
+
 export default function ChatBot() {
   const { messages, loading, sendMessage, endRef, setMessages } = useChatbot();
   const [input, setInput] = useState('');
   const [open, setOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
-  // Format assistant messages that look like dates with date-fns (simple heuristic)
+  // Sanitize assistant text (remove markdown markers) and format ISO dates
   const displayMessages = useMemo(() => messages.map((m) => {
-    if (m.role === 'assistant' && /\b\d{4}-\d{2}-\d{2}\b/.test(m.content)) {
-      try {
-        const formatted = m.content.replace(/\b(\d{4}-\d{2}-\d{2})\b/g, (d) => {
+    if (m.role !== 'assistant') return m;
+    try {
+      let content = String(m.content || '');
+      // Format simple ISO dates to readable form
+      if (/\b\d{4}-\d{2}-\d{2}\b/.test(content)) {
+        content = content.replace(/\b(\d{4}-\d{2}-\d{2})\b/g, (d) => {
           const dt = new Date(d);
           return isNaN(dt.getTime()) ? d : format(dt, 'PP');
         });
-        return { ...m, content: formatted };
-      } catch { return m; }
+      }
+      // Strip markdown
+      content = sanitizeMarkdown(content);
+      return { ...m, content };
+    } catch {
+      return { ...m, content: sanitizeMarkdown(m.content) };
     }
-    return m;
   }), [messages]);
 
   // Refresh function to clear all messages and start fresh
@@ -63,13 +82,13 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-[9999]">
+    <div className="fixed bottom-28 right-4 sm:bottom-5 sm:right-5 z-[9999]">
       {!open ? (
         <Button onClick={() => setOpen(true)} className="rounded-full h-14 w-14 p-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-2xl shadow-purple-500/30 border-2 border-white/20 hover:border-purple-400/50 transition-all duration-300 hover:scale-110">
           <Sparkles className="h-6 w-6" />
         </Button>
       ) : (
-        <div className="w-[380px] sm:w-[440px] rounded-3xl border-2 border-white/20 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-2xl text-white shadow-2xl shadow-purple-500/20 overflow-hidden">
+        <div className="w-[95vw] max-w-[440px] rounded-3xl border-2 border-white/20 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-2xl text-white shadow-2xl shadow-purple-500/20 overflow-hidden">
           <div className="relative h-16 bg-gradient-to-r from-purple-600/20 via-pink-500/15 to-purple-600/20 border-b border-white/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.03),transparent_40%)]" />
             <div className="relative h-full px-4 flex items-center gap-2 justify-between">
@@ -89,14 +108,14 @@ export default function ChatBot() {
                 <button onClick={exportCsv} title="Export chat" className="text-white/80 hover:text-white transition-colors duration-200 p-1 rounded hover:bg-white/10">
                   <Download className="h-4 w-4" />
                 </button>
-                <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors duration-200 p-2 rounded hover:bg-white/10 text-xl font-bold">×</button>
+                <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors duration-200 p-3 sm:p-2 rounded hover:bg-white/10 text-xl font-bold">×</button>
               </div>
             </div>
           </div>
 
           {/* Removed default topics section */}
 
-          <ScrollArea className="h-80 px-4 py-4">
+          <ScrollArea className="h-64 sm:h-80 px-4 py-4">
             <div className="space-y-4">
               {displayMessages.map((m, i) => (
                 <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>

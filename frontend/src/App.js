@@ -61,6 +61,21 @@ function Dashboard() {
     pitch_status: 'Pending'
   });
 
+  // Mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Listen for mobile menu toggle events from the global header
+  useEffect(() => {
+    const handleToggleMobileMenu = () => {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    window.addEventListener('toggleMobileMenu', handleToggleMobileMenu);
+    return () => {
+      window.removeEventListener('toggleMobileMenu', handleToggleMobileMenu);
+    };
+  }, [isMobileMenuOpen]);
+
   // Optimized form handlers to prevent typing lag
   const handleNewClientChange = useCallback((field, value) => {
     setNewClient(prev => ({ ...prev, [field]: value }));
@@ -169,7 +184,6 @@ function Dashboard() {
   const [importProgress, setImportProgress] = useState(0);
   const [importResults, setImportResults] = useState(null);
   const [isImporting, setIsImporting] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Memoized status options and colors for better performance
   const statusOptions = useMemo(() => ['Pending', 'To Be Pitched', 'Cancelled', 'Closed/Won', 'Lost'], []);
@@ -924,18 +938,6 @@ function Dashboard() {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       <div className="flex h-full">
-        {/* Mobile Navigation Toggle */}
-        <div className="lg:hidden fixed top-4 left-4 z-50">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg p-2 bg-black/20 backdrop-blur-md"
-            title="Menu"
-          >
-            {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </Button>
-        </div>
 
         {/* Mobile Menu Overlay */}
         {isMobileMenuOpen && (
@@ -944,7 +946,7 @@ function Dashboard() {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <div 
-              className="absolute top-20 left-4 right-4 bg-gradient-to-b from-purple-500/20 via-indigo-500/20 to-sky-500/20 border border-white/20 rounded-2xl backdrop-blur-xl p-6"
+              className="absolute top-24 left-4 right-4 bg-gradient-to-b from-purple-500/20 via-indigo-500/20 to-sky-500/20 border border-white/20 rounded-2xl backdrop-blur-xl p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="space-y-3">
@@ -1037,24 +1039,24 @@ function Dashboard() {
 
 
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto overflow-y-auto pb-6 scroll-smooth mobile-optimized scroll-container">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto overflow-y-auto pb-6 scroll-smooth mobile-optimized scroll-container lg:pt-8 pt-20">
           {activeTab === 'dashboard' && (
               <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                                  <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
                     <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-400 text-sm">Total Clients</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm">Total Clients</p>
                           <p className="text-2xl sm:text-3xl font-bold text-sky-300">{stats.totalClients}</p>
-                        </div>
+                      </div>
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-gradient-to-br from-purple-500/20 to-sky-500/10 flex items-center justify-center">
                           <Users className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
-                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1068,7 +1070,7 @@ function Dashboard() {
                   </CardContent>
                 </Card>
 
-                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1081,7 +1083,7 @@ function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-                                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1166,14 +1168,14 @@ function Dashboard() {
               );
             })()}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8">
               <Card className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300">
                 <CardHeader className="border-b border-white/10">
                   <CardTitle className="text-white/90">Status Breakdown</CardTitle>
                   <CardDescription className="text-white/60">Clients by pitch status</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="h-64">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="h-48 sm:h-64">
                     <Pie data={statusPieData} options={{ plugins: { legend: { labels: { color: '#e5e7eb' } } } }} />
                   </div>
                 </CardContent>
@@ -1184,8 +1186,8 @@ function Dashboard() {
                   <CardTitle className="text-white/90">Monthly New Clients</CardTitle>
                   <CardDescription className="text-white/60">Last 12 months</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="h-64">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="h-48 sm:h-64">
                     <Bar data={newClientsPerMonthData} options={chartOptions} />
                   </div>
                 </CardContent>
@@ -1196,8 +1198,8 @@ function Dashboard() {
                   <CardTitle className="text-white/90">Meetings Per Month</CardTitle>
                   <CardDescription className="text-white/60">Last 12 months</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="h-64">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="h-48 sm:h-64">
                     <Bar data={meetingsPerMonthData} options={chartOptions} />
                   </div>
                 </CardContent>
@@ -1207,8 +1209,8 @@ function Dashboard() {
           )}
 
           {activeTab === 'projects' && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
+            <div className="scroll-container">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-fuchsia-300 to-sky-300 bg-clip-text text-transparent">Projects</h2>
                 <div className="flex flex-wrap gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportProjects}>
@@ -1237,7 +1239,7 @@ function Dashboard() {
                   <Input value={projectSearch} onChange={(e) => setProjectSearch(e.target.value)} placeholder="Search projects..." className="h-12 pl-10 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/70 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition" />
                 </div>
                 <Select value={projectStatusFilter} onValueChange={setProjectStatusFilter}>
-                  <SelectTrigger className="h-12 w-56 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
+                  <SelectTrigger className="h-12 w-full sm:w-56 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/10 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl text-white">
@@ -1250,7 +1252,7 @@ function Dashboard() {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
                 {filteredProjects.map((p) => (
                   <Card key={p._id || p.id} className="bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl group">
                     <CardHeader className="pb-3 border-b border-white/10">
@@ -1299,12 +1301,15 @@ function Dashboard() {
               {filteredProjects.length === 0 && (
                 <div className="text-center py-12 text-gray-400">No projects found</div>
               )}
+              
+              {/* Bottom spacing for mobile */}
+              <div className="h-20 lg:hidden"></div>
             </div>
           )}
 
           {activeTab === 'leads' && (
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">Leads Development</h2>
                 <div className="flex flex-wrap gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportLeads}>
@@ -1343,7 +1348,7 @@ function Dashboard() {
                   />
                 </div>
                 <Select value={leadStatusFilter} onValueChange={setLeadStatusFilter}>
-                  <SelectTrigger className="h-12 w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
+                  <SelectTrigger className="h-12 w-full sm:w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/10 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl text-white">
@@ -1354,7 +1359,7 @@ function Dashboard() {
                   </SelectContent>
                 </Select>
                 <Select value={leadSourceFilter} onValueChange={setLeadSourceFilter}>
-                  <SelectTrigger className="h-12 w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
+                  <SelectTrigger className="h-12 w-full sm:w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
                     <SelectValue placeholder="Source" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/10 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl text-white">
@@ -1365,7 +1370,7 @@ function Dashboard() {
                   </SelectContent>
                 </Select>
                 <Select value={leadPriorityFilter} onValueChange={setLeadPriorityFilter}>
-                  <SelectTrigger className="h-12 w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
+                  <SelectTrigger className="h-12 w-full sm:w-40 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
                     <SelectValue placeholder="Priority" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/10 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl text-white">
@@ -1508,8 +1513,8 @@ function Dashboard() {
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="flex-1 relative">
+              <div className="flex flex-col gap-3 mb-4 sm:mb-6">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                   <Input
                     value={searchTerm}
@@ -1519,7 +1524,7 @@ function Dashboard() {
                   />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-12 w-56 pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
+                  <SelectTrigger className="h-12 w-full pl-4 pr-10 bg-white/10 border border-white/20 rounded-2xl text-white data-[placeholder]:text-white data-[placeholder]:opacity-100 backdrop-blur-xl shadow-sm hover:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 transition">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/10 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl text-white">
@@ -1615,26 +1620,30 @@ function Dashboard() {
               {!loading && clients.length === 0 && (
                  <div className="text-center py-12 text-gray-400">No clients found</div>
               )}
+              
+              {/* Bottom spacing for mobile to prevent cutting */}
+              <div className="h-20 lg:hidden"></div>
             </div>
           )}
 
           {activeTab === 'meetings' && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
+            <div className="scroll-container">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Meetings</h2>
                <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => setIsAddMeetingOpen(true)}>
                  <Plus className="mr-2 h-4 w-4" /> Schedule Meeting
                </Button>
                <Dialog open={isAddMeetingOpen} onOpenChange={setIsAddMeetingOpen}>
-                  <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+                  <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
                     <div className="sticky top-0 z-10 relative h-16 sm:h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
                                   <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
               <h3 className="text-lg sm:text-xl font-semibold text-white/90">Schedule New Meeting</h3>
               <p className="text-xs sm:text-sm text-white/60">Create a meeting with an existing client</p>
-            </div>
+                      </div>
                     </div>
-                    <form onSubmit={handleScheduleMeeting} className="px-4 sm:px-6 py-5 space-y-5">
+                    <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
+                      <form onSubmit={handleScheduleMeeting} className="px-4 sm:px-6 py-5 space-y-5">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <Label className="text-white/70 text-xs uppercase tracking-wider">Client *</Label>
@@ -1695,6 +1704,7 @@ function Dashboard() {
                         <Button type="submit" className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 rounded-xl px-6">Schedule</Button>
                    </div>
                     </form>
+                    </div>
                  </DialogContent>
                </Dialog>
              </div>
@@ -1784,16 +1794,22 @@ function Dashboard() {
                 </CardContent>
               </Card>
               </div>
+              
+              {/* Bottom spacing for mobile */}
+              <div className="h-20 lg:hidden"></div>
             </div>
           )}
         </main>
+        
+        {/* Bottom spacing for mobile to prevent cutting */}
+        <div className="lg:hidden h-32"></div>
     </div>
 
       <Toaster />
 
       {/* Add Client Dialog */}
       <Dialog open={isAddClientOpen} onOpenChange={setIsAddClientOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
@@ -1801,7 +1817,8 @@ function Dashboard() {
               <p className="text-xs sm:text-sm text-white/60">Enter client details to add them to your CRM</p>
             </div>
           </div>
-          <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-5 space-y-6">
+          <div className="overflow-y-auto max-h-[calc(95vh-7rem)]">
+            <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-5 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -1881,12 +1898,13 @@ function Dashboard() {
               <Button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl px-6">Save Client</Button>
             </div>
           </form>
+          </div>
         </DialogContent>
       </Dialog>
 
       {/* Add Project Dialog */}
       <Dialog open={isAddProjectOpen} onOpenChange={setIsAddProjectOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-16 sm:h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
@@ -1894,8 +1912,8 @@ function Dashboard() {
               <p className="text-xs sm:text-sm text-white/60">Link a project to a client</p>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
-                      <form onSubmit={async (e) => { e.preventDefault(); try { const formData = new FormData(); formData.append('name', newProject.name); formData.append('client_id', newProject.client_id); formData.append('description', newProject.description || ''); if (newProject.start_date) formData.append('start_date', new Date(newProject.start_date).toISOString()); if (newProject.due_date) formData.append('due_date', new Date(newProject.due_date).toISOString()); formData.append('assigned_to', newProject.client_id); formData.append('status', newProject.status); formData.append('priority', newProject.priority); if (newProject.progress !== '') formData.append('progress', newProject.progress); selectedFiles.forEach(file => { formData.append('documents', file); }); if (!newProject.client_id) { toast.error('Select a client'); return; } await axios.post(`${API}/projects`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }); toast.success('Project created'); setIsAddProjectOpen(false); setNewProject({ name: '', client_id: '', description: '', start_date: '', due_date: '', assigned_to: '', status: 'Not Started', priority: 'Medium', progress: '' }); setSelectedFiles([]); fetchProjects(); } catch (err) { const firstValidationMessage = Array.isArray(err?.response?.data?.details) && err.response.data.details.length > 0 ? err.response.data.details[0]?.msg : null; const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to create project'; toast.error(message); } }} className="px-4 sm:px-6 py-5 space-y-4">
+          <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
+                      <form onSubmit={async (e) => { e.preventDefault(); try { const formData = new FormData(); formData.append('name', newProject.name); formData.append('client_id', newProject.client_id); formData.append('description', newProject.description || ''); if (newProject.start_date) formData.append('start_date', new Date(newProject.start_date).toISOString()); if (newProject.due_date) formData.append('due_date', new Date(newProject.due_date).toISOString()); formData.append('assigned_to', newProject.client_id); formData.append('status', newProject.status); formData.append('priority', newProject.priority); if (newProject.progress !== '') formData.append('progress', newProject.progress); selectedFiles.forEach(file => { formData.append('documents', file); }); if (!newProject.client_id) { toast.error('Select a client'); return; } await axios.post(`${API}/projects`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }); toast.success('Project created'); setIsAddProjectOpen(false); setNewProject({ name: '', client_id: '', description: '', start_date: '', due_date: '', assigned_to: '', status: 'Not Started', priority: 'Medium', progress: '' }); setSelectedFiles([]); fetchProjects(); } catch (err) { const firstValidationMessage = Array.isArray(err?.response?.data?.details) && err.response.data.details.length > 0 ? err.response.data.details[0]?.msg : null; const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to create project'; toast.error(message); } }} className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Project Name *</Label>
@@ -2055,7 +2073,7 @@ function Dashboard() {
 
       {/* Edit Project Dialog */}
       <Dialog open={isEditProjectOpen} onOpenChange={setIsEditProjectOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-6 pt-6">
@@ -2064,7 +2082,7 @@ function Dashboard() {
             </div>
           </div>
           {editProject && (
-            <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
+            <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
@@ -2107,7 +2125,7 @@ function Dashboard() {
                 const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to update project';
                 toast.error(message);
               }
-            }} className="px-6 py-5 space-y-4">
+            }} className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Project Name *</Label>
@@ -2368,18 +2386,19 @@ function Dashboard() {
 
       {/* View Client Dialog */}
       <Dialog open={isViewClientOpen} onOpenChange={setIsViewClientOpen}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl">
       {selectedClient && (
                       <div>
-              <div className="relative h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
+              <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-                <div className="relative px-6 pt-6">
-                  <h3 className="text-xl font-semibold text-white/90">Client Details</h3>
-                  <p className="text-sm text-white/60">Complete profile overview</p>
+                <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white/90">Client Details</h3>
+                  <p className="text-xs sm:text-sm text-white/60">Complete profile overview</p>
                     </div>
                   </div>
 
-              <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
+              <div className="overflow-y-auto max-h-[calc(95vh-8rem)]">
+                <div className="px-4 sm:px-6 py-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="text-xs uppercase tracking-wider text-white/60">Full Name</div>
                   <div className="mt-1.5 font-medium">{selectedClient.name}</div>
@@ -2412,9 +2431,10 @@ function Dashboard() {
                 )}
               </div>
 
-              <div className="px-6 pb-6 flex items-center justify-end gap-3">
+              <div className="px-4 sm:px-6 pb-6 flex items-center justify-end gap-3">
                 <Button variant="ghost" className="text-white hover:bg-white/10 rounded-xl" onClick={() => setIsViewClientOpen(false)}>Close</Button>
                 <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl">Edit</Button>
+              </div>
               </div>
             </div>
           )}
@@ -2423,16 +2443,17 @@ function Dashboard() {
 
       {/* Edit Client Dialog */}
       <Dialog open={isEditClientOpen} onOpenChange={setIsEditClientOpen}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
-          <div className="relative h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+          <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-6 pt-6">
-              <h3 className="text-xl font-semibold text-white/90">Edit Client</h3>
-              <p className="text-sm text-white/60">Update details for this client</p>
+            <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90">Edit Client</h3>
+              <p className="text-xs sm:text-sm text-white/60">Update details for this client</p>
             </div>
           </div>
           {editClient && (
-            <form onSubmit={handleUpdateClient} className="px-6 py-5 space-y-6">
+            <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
+              <form onSubmit={handleUpdateClient} className="px-4 sm:px-6 py-5 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -2512,26 +2533,27 @@ function Dashboard() {
                 <Button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl px-6">Update Client</Button>
               </div>
             </form>
+            </div>
           )}
         </DialogContent>
       </Dialog>
 
       {/* View Meeting Dialog */}
       <Dialog open={isViewMeetingOpen} onOpenChange={setIsViewMeetingOpen}>
-        <DialogContent className="max-w-xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           {selectedMeeting && (
             <div>
               <div className="relative h-16 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-                <div className="relative px-6 pt-4">
+                <div className="relative px-4 sm:px-6 pt-4">
                   <h3 className="text-lg font-semibold text-white/90">{selectedMeeting.title}</h3>
                   <p className="text-xs text-white/70">{format(new Date(selectedMeeting.date),'MMM dd, yyyy')} · {selectedMeeting.time}</p>
                 </div>
               </div>
-              <div className="px-6 py-5 space-y-3">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
                 <div className="text-sm text-white/80">{selectedMeeting.notes || 'No notes provided'}</div>
               </div>
-              <div className="px-6 pb-4 flex items-center justify-end gap-2">
+              <div className="px-4 sm:px-6 pb-4 flex items-center justify-end gap-2">
                 <Button variant="ghost" className="text-white hover:bg-white/10 rounded-xl" onClick={() => setIsViewMeetingOpen(false)}>Close</Button>
                 <Button className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 rounded-xl"
                   onClick={() => {
@@ -2553,16 +2575,16 @@ function Dashboard() {
 
       {/* Edit Meeting Dialog */}
       <Dialog open={isEditMeetingOpen} onOpenChange={setIsEditMeetingOpen}>
-        <DialogContent className="max-w-xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-16 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-6 pt-4">
+            <div className="relative px-4 sm:px-6 pt-4">
               <h3 className="text-lg font-semibold text-white/90">Edit Meeting</h3>
               <p className="text-xs text-white/70">Update the meeting details</p>
             </div>
           </div>
           {editMeeting && (
-            <form onSubmit={handleUpdateMeeting} className="px-6 py-5 space-y-5">
+            <form onSubmit={handleUpdateMeeting} className="px-4 sm:px-6 py-4 sm:py-5 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Client *</Label>
@@ -2627,7 +2649,7 @@ function Dashboard() {
 
       {/* Project Detail Modal */}
       <Dialog open={isProjectDetailOpen} onOpenChange={setIsProjectDetailOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-cyan-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-6 pt-6">
@@ -2636,11 +2658,11 @@ function Dashboard() {
             </div>
           </div>
           
-          <div className="overflow-y-auto max-h-[calc(90vh-10rem)]">
+          <div className="overflow-y-auto max-h-[calc(95vh-10rem)]">
             {viewingProject && (
-              <div className="px-6 py-5 space-y-6">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-6">
               {/* Project Header */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h2 className="text-2xl font-bold text-white/90 mb-2">{viewingProject.name}</h2>
@@ -2686,7 +2708,7 @@ function Dashboard() {
               </div>
 
               {/* Documents Section */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-white/90">Documents</h3>
                   <div className="text-sm text-white/60">{viewingProject.documents?.length || 0} files</div>
@@ -2756,7 +2778,7 @@ function Dashboard() {
               </div>
 
               {/* Upload New Documents */}
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white/90 mb-4">Upload New Documents</h3>
                 <div className="border-2 border-dashed border-white/20 rounded-xl p-4 hover:border-white/30 transition-colors">
                   <input
@@ -2837,7 +2859,7 @@ function Dashboard() {
           )}
           </div>
           
-          <div className="sticky bottom-0 bg-gradient-to-t from-white/5 to-transparent px-6 py-4 border-t border-white/10">
+          <div className="sticky bottom-0 bg-gradient-to-t from-white/5 to-transparent px-4 sm:px-6 py-4 border-t border-white/10">
             <div className="flex items-center justify-end gap-3">
               <Button
                 variant="ghost"
@@ -2856,7 +2878,7 @@ function Dashboard() {
 
       {/* Add Lead Dialog */}
       <Dialog open={isAddLeadOpen} onOpenChange={setIsAddLeadOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-24 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 pt-4">
@@ -2864,7 +2886,7 @@ function Dashboard() {
               <p className="text-xs text-white/60">Enter lead details to add them to your pipeline</p>
             </div>
           </div>
-          <form onSubmit={handleAddLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <form onSubmit={handleAddLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(95vh-120px)]">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -2971,7 +2993,7 @@ function Dashboard() {
 
       {/* Edit Lead Dialog */}
       <Dialog open={isEditLeadOpen} onOpenChange={setIsEditLeadOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-24 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 pt-4">
@@ -2980,7 +3002,7 @@ function Dashboard() {
             </div>
           </div>
           {editLead && (
-            <form onSubmit={handleUpdateLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <form onSubmit={handleUpdateLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(95vh-120px)]">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -3306,7 +3328,32 @@ const ProtectedRoute = ({ children }) => {
     );
   }
   
-  return isAuthenticated ? children : <Navigate to="/auth" replace />;
+  return isAuthenticated ? (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* Mobile Header with Logo and Hamburger - Shows on all authenticated pages */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-white/10 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="text-lg font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">
+            CLIENTO
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              // This will be handled by the Dashboard component
+              const event = new CustomEvent('toggleMobileMenu');
+              window.dispatchEvent(event);
+            }}
+            className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg p-1.5"
+            title="Menu"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      {children}
+    </div>
+  ) : <Navigate to="/auth" replace />;
 };
 
 function App() {

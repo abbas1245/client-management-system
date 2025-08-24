@@ -131,14 +131,14 @@ const Landing = () => {
     window.addEventListener('resize', resizeCanvas);
     // Only add mouse move listener on desktop
     if (!isMobile) {
-      window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
     }
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       // Only remove mouse move listener if it was added
       if (!isMobile) {
-        window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       }
       cancelAnimationFrame(animationId);
     };
