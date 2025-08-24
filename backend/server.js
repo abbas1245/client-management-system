@@ -45,7 +45,7 @@ const chatbotRoutes = require('./routes/chatbot');
 
 // Middleware
 const allowedOrigins = [
-  "https://final-b4k.pages.dev",  // Cloudflare Pages preview/live
+  "https://responsive-737.pages.dev",  // Cloudflare Pages preview/live
   "https://cliento.icu",          // root domain
   "https://www.cliento.icu"       // www domain
 ];
