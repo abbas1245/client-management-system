@@ -42,8 +42,16 @@ const Landing = () => {
     setIsVisible(true);
   }, []);
 
-  // Animated background particles
+  // Animated background particles - disabled on mobile for performance
   useEffect(() => {
+    // Check if device is mobile
+    const isMobile = window.innerWidth <= 768;
+    
+    // Skip animation on mobile devices
+    if (isMobile) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let animationId;
@@ -56,7 +64,10 @@ const Landing = () => {
 
     const createParticles = () => {
       const particles = [];
-      for (let i = 0; i < 80; i++) {
+      // Reduce particles on smaller screens for better performance
+      const particleCount = window.innerWidth > 1200 ? 80 : window.innerWidth > 768 ? 50 : 30;
+      
+      for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -118,11 +129,17 @@ const Landing = () => {
     animateParticles();
 
     window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('mousemove', handleMouseMove);
+    // Only add mouse move listener on desktop
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('mousemove', handleMouseMove);
+      // Only remove mouse move listener if it was added
+      if (!isMobile) {
+        window.removeEventListener('mousemove', handleMouseMove);
+      }
       cancelAnimationFrame(animationId);
     };
   }, [mousePosition]);
@@ -131,8 +148,11 @@ const Landing = () => {
     navigate('/auth');
   };
 
-  // 3D Tilt effect for cards
+  // 3D Tilt effect for cards - disabled on mobile for performance
   const handleCardTilt = (e, card) => {
+    // Skip 3D effects on mobile devices
+    if (window.innerWidth <= 768) return;
+    
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -147,6 +167,9 @@ const Landing = () => {
   };
 
   const handleCardReset = (card) => {
+    // Skip 3D effects on mobile devices
+    if (window.innerWidth <= 768) return;
+    
     card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
   };
 
@@ -186,14 +209,16 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-black relative overflow-hidden">
-      {/* Animated Background */}
+      {/* Mobile-optimized static background */}
+      <div className="md:hidden absolute inset-0 bg-gradient-to-br from-purple-900/30 via-black to-purple-900/20"></div>
+      {/* Animated Background - Hidden on mobile for performance */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-40"
+        className="hidden md:block absolute inset-0 w-full h-full opacity-40"
       />
 
-      {/* Floating Gradient Orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Floating Gradient Orbs - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDuration: '8s'}}></div>
         <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s', animationDuration: '10s'}}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '6s', animationDuration: '12s'}}></div>

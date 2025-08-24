@@ -32,7 +32,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend as ChartLegend, CategoryScale, LinearScale, BarElement, Title as ChartTitle } from 'chart.js';
 
 // Icons
-import { Users, Calendar as CalendarIcon, Plus, Search, CheckCircle, AlertCircle, Clock, Eye, Edit, Trash2, Mail, Phone, Download, Briefcase, LogOut } from 'lucide-react';
+import { Users, Calendar as CalendarIcon, Plus, Search, CheckCircle, AlertCircle, Clock, Eye, Edit, Trash2, Mail, Phone, Download, Briefcase, LogOut, Menu, X } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 import { format, subMonths, startOfMonth, eachMonthOfInterval } from 'date-fns';
@@ -169,6 +169,7 @@ function Dashboard() {
   const [importProgress, setImportProgress] = useState(0);
   const [importResults, setImportResults] = useState(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Memoized status options and colors for better performance
   const statusOptions = useMemo(() => ['Pending', 'To Be Pitched', 'Cancelled', 'Closed/Won', 'Lost'], []);
@@ -928,13 +929,73 @@ function Dashboard() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg p-2 bg-black/20 backdrop-blur-md"
             title="Menu"
           >
-            <Users className="h-4 w-4" />
+            {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </Button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <div 
+              className="absolute top-20 left-4 right-4 bg-gradient-to-b from-purple-500/20 via-indigo-500/20 to-sky-500/20 border border-white/20 rounded-2xl backdrop-blur-xl p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="space-y-3">
+                <Button 
+                  variant={activeTab === 'dashboard' ? 'default' : 'ghost'} 
+                  className="w-full justify-start rounded-xl transition-all duration-300 bg-blue-500/10 hover:bg-blue-500/20 text-sky-200" 
+                  onClick={() => { setActiveTab('dashboard'); setIsMobileMenuOpen(false); }}
+                >
+                  <Users className="mr-3 h-4 w-4" /> Dashboard
+                </Button>
+                <Button 
+                  variant={activeTab === 'clients' ? 'default' : 'ghost'} 
+                  className="w-full justify-start rounded-xl transition-all duration-300 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-200" 
+                  onClick={() => { setActiveTab('clients'); setIsMobileMenuOpen(false); }}
+                >
+                  <Users className="mr-3 h-4 w-4" /> Clients
+                </Button>
+                <Button 
+                  variant={activeTab === 'leads' ? 'default' : 'ghost'} 
+                  className="w-full justify-start rounded-xl transition-all duration-300 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200" 
+                  onClick={() => { setActiveTab('leads'); setIsMobileMenuOpen(false); }}
+                >
+                  <Users className="mr-3 h-4 w-4" /> Leads
+                </Button>
+                <Button 
+                  variant={activeTab === 'projects' ? 'default' : 'ghost'} 
+                  className="w-full justify-start rounded-xl transition-all duration-300 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-200" 
+                  onClick={() => { setActiveTab('projects'); setIsMobileMenuOpen(false); }}
+                >
+                  <Briefcase className="mr-3 h-4 w-4" /> Projects
+                </Button>
+                <Button 
+                  variant={activeTab === 'meetings' ? 'default' : 'ghost'} 
+                  className="w-full justify-start rounded-xl transition-all duration-300 bg-purple-500/10 hover:bg-purple-500/20 text-purple-200" 
+                  onClick={() => { setActiveTab('meetings'); setIsMobileMenuOpen(false); }}
+                >
+                  <CalendarIcon className="mr-3 h-4 w-4" /> Meetings
+                </Button>
+                <div className="pt-3 border-t border-white/20">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start rounded-xl text-red-300 hover:text-red-200 hover:bg-red-500/10"
+                    onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                  >
+                    <LogOut className="mr-3 h-4 w-4" /> Logout
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Sidebar - Hidden on Mobile, Visible on Desktop */}
         <aside className="hidden lg:block w-64 min-h-screen bg-gradient-to-b from-purple-500/10 via-indigo-500/10 to-sky-500/10 border border-white/10 p-6 rounded-2xl m-6 sticky top-6 backdrop-blur-md">
@@ -974,58 +1035,9 @@ function Dashboard() {
           </div>
         </aside>
 
-        {/* Mobile Navigation Bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/20 backdrop-blur-md border-t border-white/10">
-          <div className="flex justify-around py-2">
-            <Button
-              variant={activeTab === 'dashboard' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('dashboard')}
-              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
-            >
-              <Users className="h-4 w-4 mb-1" />
-              Dashboard
-            </Button>
-            <Button
-              variant={activeTab === 'clients' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('clients')}
-              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
-            >
-              <Users className="h-4 w-4 mb-1" />
-              Clients
-            </Button>
-            <Button
-              variant={activeTab === 'leads' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('leads')}
-              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
-            >
-              <Users className="h-4 w-4 mb-1" />
-              Leads
-            </Button>
-            <Button
-              variant={activeTab === 'projects' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('projects')}
-              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
-            >
-              <Briefcase className="h-4 w-4 mb-1" />
-              Projects
-            </Button>
-            <Button
-              variant={activeTab === 'meetings' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('meetings')}
-              className="flex flex-col items-center p-2 text-xs rounded-lg transition-all duration-300"
-            >
-              <CalendarIcon className="h-4 w-4 mb-1" />
-              Meetings
-            </Button>
-          </div>
-        </div>
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto overflow-y-auto pb-24 lg:pb-6">
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto overflow-y-auto pb-6 scroll-smooth mobile-optimized scroll-container">
           {activeTab === 'dashboard' && (
               <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -1198,7 +1210,7 @@ function Dashboard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-fuchsia-300 to-sky-300 bg-clip-text text-transparent">Projects</h2>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportProjects}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1294,7 +1306,7 @@ function Dashboard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">Leads Development</h2>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportLeads}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1474,7 +1486,7 @@ function Dashboard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-300 to-sky-300 bg-clip-text text-transparent">Clients</h2>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="ghost" className="rounded-xl text-white hover:bg-white/10" onClick={handleExportClients}>
                     <Download className="mr-2 h-4 w-4" /> Export
                   </Button>
@@ -1614,12 +1626,12 @@ function Dashboard() {
                  <Plus className="mr-2 h-4 w-4" /> Schedule Meeting
                </Button>
                <Dialog open={isAddMeetingOpen} onOpenChange={setIsAddMeetingOpen}>
-                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
-                    <div className="sticky top-0 z-10 relative h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
+                  <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+                    <div className="sticky top-0 z-10 relative h-16 sm:h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-                                  <div className="relative px-4 sm:px-6 pt-6">
-              <h3 className="text-xl font-semibold text-white/90">Schedule New Meeting</h3>
-              <p className="text-sm text-white/60">Create a meeting with an existing client</p>
+                                  <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90">Schedule New Meeting</h3>
+              <p className="text-xs sm:text-sm text-white/60">Create a meeting with an existing client</p>
             </div>
                     </div>
                     <form onSubmit={handleScheduleMeeting} className="px-4 sm:px-6 py-5 space-y-5">
@@ -1781,12 +1793,12 @@ function Dashboard() {
 
       {/* Add Client Dialog */}
       <Dialog open={isAddClientOpen} onOpenChange={setIsAddClientOpen}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
-          <div className="relative h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+          <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-4 sm:px-6 pt-6">
-              <h3 className="text-xl font-semibold text-white/90">Add New Client</h3>
-              <p className="text-sm text-white/60">Enter client details to add them to your CRM</p>
+            <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90">Add New Client</h3>
+              <p className="text-xs sm:text-sm text-white/60">Enter client details to add them to your CRM</p>
             </div>
           </div>
           <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-5 space-y-6">
@@ -1874,12 +1886,12 @@ function Dashboard() {
 
       {/* Add Project Dialog */}
       <Dialog open={isAddProjectOpen} onOpenChange={setIsAddProjectOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
-          <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+          <div className="sticky top-0 z-20 h-16 sm:h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
-            <div className="relative px-4 sm:px-6 pt-6">
-              <h3 className="text-xl font-semibold text-white/90">Add New Project</h3>
-              <p className="text-sm text-white/60">Link a project to a client</p>
+            <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white/90">Add New Project</h3>
+              <p className="text-xs sm:text-sm text-white/60">Link a project to a client</p>
             </div>
           </div>
           <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
