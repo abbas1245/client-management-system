@@ -1389,10 +1389,10 @@ function Dashboard() {
                 <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
                   {/* Table Header */}
                   <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-white/5 border-b border-white/10 text-xs font-medium text-white/70 uppercase tracking-wider">
-                    <div className="col-span-2">Lead</div>
+                    <div className="col-span-2 sm:col-span-2">Lead</div>
                     <div className="col-span-1">Status</div>
-                    <div className="col-span-1">Priority</div>
-                    <div className="col-span-1">Source</div>
+                    <div className="col-span-1 hidden sm:block">Priority</div>
+                    <div className="col-span-1 hidden sm:block">Source</div>
                     <div className="col-span-1">Actions</div>
                   </div>
                   
@@ -1400,11 +1400,11 @@ function Dashboard() {
                   {leads.map(lead => (
                     <div key={lead._id || lead.id} className="grid grid-cols-6 gap-4 px-6 py-4 border-b border-white/5 hover:bg-white/5 transition-colors duration-200 group">
                       {/* Lead Info */}
-                      <div className="col-span-2">
+                      <div className="col-span-2 sm:col-span-2">
                         <div className="font-medium text-white/90 group-hover:text-white transition">{lead.fullName}</div>
-                        <div className="text-sm text-gray-400">{lead.company || 'No company'}</div>
+                        <div className="text-sm text-gray-400 hidden sm:block">{lead.company || 'No company'}</div>
                         {lead.email && (
-                          <div className="text-xs text-gray-500 mt-1 truncate">{lead.email}</div>
+                          <div className="text-xs text-gray-500 mt-1 truncate hidden sm:block">{lead.email}</div>
                         )}
                       </div>
                       
@@ -1416,14 +1416,14 @@ function Dashboard() {
                       </div>
                       
                       {/* Priority */}
-                      <div className="col-span-1">
+                      <div className="col-span-1 hidden sm:block">
                         <Badge className={`px-2.5 py-1 rounded-full border border-white/10 bg-white/5 ${leadPriorityColors[lead.priority] || ''} text-xs`}>
                           {lead.priority}
                         </Badge>
                       </div>
                       
                       {/* Source */}
-                      <div className="col-span-1">
+                      <div className="col-span-1 hidden sm:block">
                         <Badge className={`px-2.5 py-1 rounded-full border border-white/10 bg-white/5 ${leadSourceColors[lead.source] || ''} text-xs`}>
                           {lead.source.replace('_', ' ')}
                         </Badge>
@@ -1809,7 +1809,7 @@ function Dashboard() {
 
       {/* Add Client Dialog */}
       <Dialog open={isAddClientOpen} onOpenChange={setIsAddClientOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
@@ -1817,8 +1817,8 @@ function Dashboard() {
               <p className="text-xs sm:text-sm text-white/60">Enter client details to add them to your CRM</p>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-[calc(95vh-7rem)]">
-            <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-5 space-y-6">
+          <div className="overflow-y-auto max-h-[calc(90vh-7rem)]">
+            <form onSubmit={handleAddClient} className="px-4 sm:px-6 py-4 sm:py-5 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -1904,7 +1904,7 @@ function Dashboard() {
 
       {/* Add Project Dialog */}
       <Dialog open={isAddProjectOpen} onOpenChange={setIsAddProjectOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-16 sm:h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
@@ -1912,7 +1912,7 @@ function Dashboard() {
               <p className="text-xs sm:text-sm text-white/60">Link a project to a client</p>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
+          <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
                       <form onSubmit={async (e) => { e.preventDefault(); try { const formData = new FormData(); formData.append('name', newProject.name); formData.append('client_id', newProject.client_id); formData.append('description', newProject.description || ''); if (newProject.start_date) formData.append('start_date', new Date(newProject.start_date).toISOString()); if (newProject.due_date) formData.append('due_date', new Date(newProject.due_date).toISOString()); formData.append('assigned_to', newProject.client_id); formData.append('status', newProject.status); formData.append('priority', newProject.priority); if (newProject.progress !== '') formData.append('progress', newProject.progress); selectedFiles.forEach(file => { formData.append('documents', file); }); if (!newProject.client_id) { toast.error('Select a client'); return; } await axios.post(`${API}/projects`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }); toast.success('Project created'); setIsAddProjectOpen(false); setNewProject({ name: '', client_id: '', description: '', start_date: '', due_date: '', assigned_to: '', status: 'Not Started', priority: 'Medium', progress: '' }); setSelectedFiles([]); fetchProjects(); } catch (err) { const firstValidationMessage = Array.isArray(err?.response?.data?.details) && err.response.data.details.length > 0 ? err.response.data.details[0]?.msg : null; const message = firstValidationMessage || err?.response?.data?.error || err?.response?.data?.message || 'Failed to create project'; toast.error(message); } }} className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
@@ -2073,7 +2073,7 @@ function Dashboard() {
 
       {/* Edit Project Dialog */}
       <Dialog open={isEditProjectOpen} onOpenChange={setIsEditProjectOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-6 pt-6">
@@ -2082,7 +2082,7 @@ function Dashboard() {
             </div>
           </div>
           {editProject && (
-            <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
+            <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
@@ -2386,7 +2386,7 @@ function Dashboard() {
 
       {/* View Client Dialog */}
       <Dialog open={isViewClientOpen} onOpenChange={setIsViewClientOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl">
       {selectedClient && (
                       <div>
               <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
@@ -2397,8 +2397,8 @@ function Dashboard() {
                     </div>
                   </div>
 
-              <div className="overflow-y-auto max-h-[calc(95vh-8rem)]">
-                <div className="px-4 sm:px-6 py-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
+              <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+                <div className="px-4 sm:px-6 py-4 sm:py-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="text-xs uppercase tracking-wider text-white/60">Full Name</div>
                   <div className="mt-1.5 font-medium">{selectedClient.name}</div>
@@ -2443,7 +2443,7 @@ function Dashboard() {
 
       {/* Edit Client Dialog */}
       <Dialog open={isEditClientOpen} onOpenChange={setIsEditClientOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-20 sm:h-28 bg-gradient-to-r from-fuchsia-500/30 via-purple-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 sm:px-6 pt-4 sm:pt-6">
@@ -2452,8 +2452,8 @@ function Dashboard() {
             </div>
           </div>
           {editClient && (
-            <div className="overflow-y-auto max-h-[calc(95vh-5rem)]">
-              <form onSubmit={handleUpdateClient} className="px-4 sm:px-6 py-5 space-y-6">
+            <div className="overflow-y-auto max-h-[calc(90vh-5rem)]">
+              <form onSubmit={handleUpdateClient} className="px-4 sm:px-6 py-4 sm:py-5 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -2649,7 +2649,7 @@ function Dashboard() {
 
       {/* Project Detail Modal */}
       <Dialog open={isProjectDetailOpen} onOpenChange={setIsProjectDetailOpen}>
-        <DialogContent className="w-[95vw] max-w-4xl max-h-[95vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[90vh] overflow-hidden p-0 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="sticky top-0 z-20 h-20 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-cyan-500/20 border-b border-white/10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-6 pt-6">
@@ -2658,7 +2658,7 @@ function Dashboard() {
             </div>
           </div>
           
-          <div className="overflow-y-auto max-h-[calc(95vh-10rem)]">
+          <div className="overflow-y-auto max-h-[calc(90vh-10rem)]">
             {viewingProject && (
               <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-6">
               {/* Project Header */}
@@ -2878,7 +2878,7 @@ function Dashboard() {
 
       {/* Add Lead Dialog */}
       <Dialog open={isAddLeadOpen} onOpenChange={setIsAddLeadOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-24 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 pt-4">
@@ -2886,7 +2886,7 @@ function Dashboard() {
               <p className="text-xs text-white/60">Enter lead details to add them to your pipeline</p>
             </div>
           </div>
-          <form onSubmit={handleAddLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(95vh-120px)]">
+          <form onSubmit={handleAddLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(90vh-120px)]">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -2993,7 +2993,7 @@ function Dashboard() {
 
       {/* Edit Lead Dialog */}
       <Dialog open={isEditLeadOpen} onOpenChange={setIsEditLeadOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           <div className="relative h-24 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-sky-500/20">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%)]" />
             <div className="relative px-4 pt-4">
@@ -3002,7 +3002,7 @@ function Dashboard() {
             </div>
           </div>
           {editLead && (
-            <form onSubmit={handleUpdateLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(95vh-120px)]">
+            <form onSubmit={handleUpdateLead} className="px-4 py-4 space-y-4 overflow-y-auto max-h-[calc(90vh-120px)]">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-white/70 text-xs uppercase tracking-wider">Full Name *</Label>
@@ -3123,7 +3123,7 @@ function Dashboard() {
 
       {/* View Lead Dialog */}
       <Dialog open={isViewLeadOpen} onOpenChange={setIsViewLeadOpen}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl text-white">
           {selectedLead && (
             <div>
               <div className="relative h-20 bg-gradient-to-r from-emerald-500/30 via-teal-500/20 to-sky-500/20">
@@ -3133,7 +3133,7 @@ function Dashboard() {
                   <p className="text-sm text-white/70">{selectedLead.company || 'No company'}</p>
                 </div>
               </div>
-              <div className="px-6 py-5 space-y-4">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {selectedLead.email && (
                     <div className="space-y-1">
@@ -3181,7 +3181,7 @@ function Dashboard() {
                   <div className="text-white/90">{selectedLead.createdAt ? new Date(selectedLead.createdAt).toLocaleDateString() : ''}</div>
                 </div>
               </div>
-              <div className="px-6 pb-6 flex items-center justify-end gap-3">
+              <div className="px-4 sm:px-6 pb-6 flex items-center justify-end gap-3">
                 <Button variant="ghost" className="text-white hover:bg-white/10 rounded-xl" onClick={() => setIsViewLeadOpen(false)}>Close</Button>
                 <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl"
                   onClick={() => {
