@@ -72,7 +72,8 @@ router.post('/', validateChat, async (req, res) => {
           messages: [
             { role: 'system', content: `${system} ${orgSnippet}` },
             { role: 'user', content: message }
-          ]
+          ],
+          max_tokens: 1500
         },
         {
           headers: {
