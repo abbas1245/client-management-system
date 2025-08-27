@@ -43,7 +43,7 @@ function requireString(name: string, fallback?: string): string {
 const config: Env = {
   NODE_ENV: (process.env.NODE_ENV as Env['NODE_ENV']) || 'development',
   PORT: Number(process.env.PORT || 5000),
-  CLIENT_URL: requireString('CLIENT_URL', 'http://localhost:3000'),
+  CLIENT_URL: requireString('CLIENT_URL', 'https://www.cliento.icu'),
   MONGODB_URI: requireString('MONGODB_URI'),
   JWT_SECRET: requireString('JWT_SECRET'),
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,

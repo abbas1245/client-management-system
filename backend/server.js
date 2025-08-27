@@ -45,9 +45,9 @@ const chatbotRoutes = require('./routes/chatbot');
 
 // Middleware
 const allowedOrigins = [
-  "https://responsive-737.pages.dev",  // Cloudflare Pages preview/live
-  "https://cliento.icu",          // root domain
-  "https://www.cliento.icu"       // www domain
+  "https://responsive-737.pages.dev",  
+  "https://cliento.icu",         
+  "https://www.cliento.icu"      
 ];
 app.use(helmet());
 app.use(compression());
